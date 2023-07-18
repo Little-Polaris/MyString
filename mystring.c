@@ -368,16 +368,14 @@ char* const rend(mystring* block){
 void replace(mystring* block, const char* const str, size_t size, size_t offset){
     if(isvalid(block)){
         if(offset + size > block->m_capacity){
-            block->m_str = realloc(block->m_str, block->m_size + size);
+            block->m_str = realloc(block->m_str, block->m_size + size + 1);
             block->m_capacity = block->m_size + size;
         }
-        char* temp = malloc(sizeof(char) * (block->m_size + size + 1));
-        memset(temp, 0, block->m_size + size + 1);
-        memmove(temp, block->m_str, offset);
-        memmove(temp + offset, str, size);
-        memmove(temp + offset + size, block->m_str + offset, block->m_size - offset);
-        free(block->m_str);
-        block->m_str = temp;
+        memmove(block->m_str + offset, str, size);
+        if(offset + size > block->m_size){
+            block->m_size = offset + size;
+            block->m_length = offset + size;
+        }
     }
 }
 
